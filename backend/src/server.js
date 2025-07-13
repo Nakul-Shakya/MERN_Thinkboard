@@ -4,6 +4,7 @@ import { connectDB } from "./config/db.js";
 import dotenv from "dotenv";
 
 const app = express();
+const PORT = process.env.PORT || 5001;
 dotenv.config();
 connectDB();
 
@@ -12,6 +13,6 @@ app.use("/api/notes", notesRouters);
 
 
 
-app.listen(3000, () => {
-  console.log("Sercer started on PORT: 3000");
+app.listen(PORT, () => {
+  console.log(`Sercer started on PORT: ${PORT}`);
 });
