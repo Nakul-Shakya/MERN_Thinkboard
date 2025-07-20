@@ -1,13 +1,36 @@
 import React, { useState } from "react";
 import { ArrowLeftIcon } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 const CreatePage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {};
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!title.trim() || !content.trim()) {
+      toast.error("All fields are required");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await axios.post("http://localhost:5001/api/notes", { title, content });
+      toast.success("Note created Sussessfully!");
+      navigate("/");
+    } catch (error) {
+      toast.error("Failed to create note");
+      console.log("Error creating note", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-base-200">
@@ -30,7 +53,7 @@ const CreatePage = () => {
                   <input
                     type="text"
                     placeholder="Note Title"
-                    className="input input-bordered mt-4 ml-4"
+                    className="input input-bordered mt-4 min-w-full"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
@@ -43,7 +66,7 @@ const CreatePage = () => {
                   <br />
                   <textarea
                     placeholder="Write your note hear..."
-                    className="textarea textarea-bordered h-32 mt-4 ml-4"
+                    className="textarea textarea-bordered h-32 mt-4 mb-4 min-w-full"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                   />
